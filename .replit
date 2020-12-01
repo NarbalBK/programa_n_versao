@@ -1,0 +1,2 @@
+language = "c"
+run = "gcc ./programa_n_versao/main.c -o main; ./main"
