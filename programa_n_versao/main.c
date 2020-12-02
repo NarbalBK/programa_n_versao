@@ -6,6 +6,7 @@
 //
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <stddef.h>
 #include <time.h>
@@ -22,12 +23,11 @@ int canal[6] = {-1,-1,-1,-1,-1,-1};
 
 void send_async(int *buf, int c);
 void receive(int *buf, int c);
-void *thread_driver(void *threadno);
-void *thread_code_a(void *thread);
-void *thread_code_b(void *thread);
-void *thread_code_c(void *thread);
+void thread_driver(void *threadno);
+void thread_code_a(void *thread);
+void thread_code_b(void *thread);
+void thread_code_c(void *thread);
 int comparacao(int vetor_comp[], int *versao_erro);
-int delay_s(float tempo);
 
 int main(void) {
     pthread_t TA;
@@ -35,10 +35,10 @@ int main(void) {
     pthread_t TC;
     pthread_t TD;
 
-    pthread_create(&TA, NULL, thread_code_a, NULL);
-    pthread_create(&TB, NULL, thread_code_b, NULL);
-    pthread_create(&TC, NULL, thread_code_c, NULL);
-    pthread_create(&TD, NULL, thread_driver, NULL);
+    pthread_create(&TA, NULL, (void*)thread_code_a, NULL);
+    pthread_create(&TB, NULL, (void*)thread_code_b, NULL);
+    pthread_create(&TC, NULL, (void*)thread_code_c, NULL);
+    pthread_create(&TD, NULL, (void*)thread_driver, NULL);
 
     pthread_join(TA, NULL);
     pthread_join(TB, NULL);
@@ -61,7 +61,7 @@ void receive(int *buf, int c){
   return;
 }
 
-void *thread_driver(void *threadno) {
+void thread_driver(void *threadno) {
     int vetor_comp[3];
     int statusok = 0;
     int statuserro = 1;
@@ -73,7 +73,7 @@ void *thread_driver(void *threadno) {
     receive(&vetor_comp[2], 2);
 
     voto_maj = comparacao(vetor_comp, &versao_erro);
-    printf("Valor correto: %d", voto_maj);
+    printf("Valor correto: %d \n", voto_maj);
 
     if(versao_erro == 0){
       send_async(&statusok, 3);
@@ -117,8 +117,8 @@ int comparacao(int vetor_comp[], int *versao_erro){
   return maj;
 }
 
-void *thread_code_a(void *thread){
-  int voto = 5+5; //TODO fazer um programa que retorna um valor e colocar aqui
+void thread_code_a(void *thread){
+  int voto = 3-3; //TODO fazer um programa que retorna um valor e colocar aqui
   int status;
   send_async(&voto, 0);
   receive(&status, 3);
@@ -130,8 +130,8 @@ void *thread_code_a(void *thread){
   }
 }
 
-void *thread_code_b(void *thread){
-  int voto = 10; //TODO fazer um programa que retorna um valor e colocar aqui
+void thread_code_b(void *thread){
+  int voto = 3*2; //TODO fazer um programa que retorna um valor e colocar aqui
   int status;
   send_async(&voto, 1);
   receive(&status, 4);
@@ -143,8 +143,8 @@ void *thread_code_b(void *thread){
   }
 }
 
-void *thread_code_c(void *thread){
-  int voto = 3*3; //TODO fazer um programa que retorna um valor e colocar aqui
+void thread_code_c(void *thread){
+    int voto = 3+3; //TODO fazer um programa que retorna um valor e colocar aqui
   int status;
   send_async(&voto, 2);
   receive(&status, 5);
@@ -155,17 +155,3 @@ void *thread_code_c(void *thread){
     puts("TC GEROU ERRO");
   }
 }
-
-int delay_s(float tempo) {
-    time_t start, end;
-    long unsigned t;
-    start = time(NULL);
-
-    do{
-        end = time(NULL);
-    } while (difftime(end, start) <= tempo);
-    return 0;    
-}
-
-
-
