@@ -7,18 +7,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
-#include <stddef.h>
-#include <time.h>
 #include <pthread.h>
 
-char listachar [30];
-
-int indice = 0;
-int flag1 = 1;
-int flag2 = 0;
-int flag3 = 0;
-int turn = 0;
 int canal[6] = {-1,-1,-1,-1,-1,-1};
 
 void send_async(int *buf, int c);
