@@ -2,8 +2,6 @@
 //  main.c
 //  programa_n_versao
 //
-//  Created by Péricles Narbal on 01/12/20.
-//
 
 #include <stdio.h>
 #include <stdlib.h>
